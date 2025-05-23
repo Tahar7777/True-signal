@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إشارات التداول السريع</title>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .signal-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+        .signal-card.sell {
+            border-left-color: #dc3545;
+        }
+        .signal-header {
+            color: #343a40;
+            margin-bottom: 10px;
+        }
+        .signal-detail {
+            margin: 5px 0;
+        }
+        .time-badge {
+            background: #007bff;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        .buy { color: #28a745; }
+        .sell { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>إشارات التداول السريع (15-30 دقيقة)</h1>
+    
+    {% for signal in signals %}
+    <div class="signal-card {% if signal.signal == 'SELL' %}sell{% endif %}">
+        <div class="signal-header">
+            <h2>
+                <span class="{% if signal.signal == 'BUY' %}buy{% else %}sell{% endif %}">
+                    {{ 'شراء سريع (LONG)' if signal.signal == 'BUY' else 'بيع سريع (SHORT)' }}
+                </span>
+                - {{ signal.symbol }}
+            </h2>
+        </div>
+        
+        <div class="signal-detail">
+            <strong>سعر الدخول:</strong> {{ signal.entry_price }} USDT
+        </div>
+        
+        <div class="signal-detail">
+            <strong>الهدف:</strong> {{ signal.target }} USDT ({{ '%.2f'|format((signal.target/signal.entry_price-1)*100 }}%)
+        </div>
+        
+        <div class="signal-detail">
+            <strong>وقف الخسارة:</strong> {{ signal.stop_loss }} USDT
+        </div>
+        
+        <div class="signal-detail">
+            <strong>وقت الدخول:</strong> 
+            <span class="time-badge">{{ signal.entry_time }}</span>
+        </div>
+        
+        <div class="signal-detail">
+            <strong>انتهاء الصلاحية:</strong> 
+            <span class="time-badge">{{ signal.expiry_time }}</span>
+        </div>
+        
+        <div class="signal-detail">
+            <strong>الإطار الزمني:</strong> {{ signal.timeframe }}
+        </div>
+        
+        <div class="signal-detail">
+            <strong>الثقة:</strong> {{ signal.confidence }}%
+        </div>
+    </div>
+    {% else %}
+    <div class="signal-card">
+        <p>لا توجد فرص تداول سريعة حالياً. جاري المسح...</p>
+    </div>
+    {% endfor %}
+</body>
+</html>
