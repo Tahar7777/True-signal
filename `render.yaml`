@@ -1,1 +1,13 @@
 
+services:
+  - type: web
+    name: bybit-signal-scanner
+    runtime: python
+    region: singapore
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+    plan: free
